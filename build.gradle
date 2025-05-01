@@ -1,0 +1,119 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'com.projects.marketmosaic'
+version = '1.0-SNAPSHOT'
+
+buildDir("./target")
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    configureEach {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("file:///Users/kunal.kulthe/Downloads/MyProjects/MarketMosaic/common-repo") }
+}
+
+ext {
+    set('springCloudVersion', "2024.0.0")
+}
+
+dependencies {
+    //common lib
+    implementation 'com.projects.marketmosaic:market-mosaic-common-lib:1.0-SNAPSHOT'
+
+    // ===== Spring Boot Starters =====
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // JPA and database support
+    implementation 'org.springframework.boot:spring-boot-starter-web'       // Web application support
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // Bean validation
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'  // Health checks and metrics
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // Redis integration
+
+    // ===== Security =====
+    implementation "org.springframework.boot:spring-boot-starter-security"  // Spring Security
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'                       // JWT API
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'                      // JWT Implementation
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'                   // JWT Jackson support
+
+    // ===== HTTP Client =====
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.3'    // HTTP client for external calls
+
+    // ===== Development Tools =====
+    compileOnly 'org.projectlombok:lombok'                                 // Code generation
+    annotationProcessor 'org.projectlombok:lombok'                         // Lombok annotation processor
+
+    // ===== Testing =====
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Spring Boot testing
+    testImplementation 'org.springframework.security:spring-security-test'  // Security testing
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'            // JUnit platform
+    testImplementation 'io.grpc:grpc-testing:1.60.1'                        // gRPC testing utilities
+    testImplementation 'org.mockito:mockito-core:5.10.0'                    // Mockito for mocking
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.10.0'           // Mockito JUnit 5 support
+
+    // ===== Protocol Buffers =====
+    implementation 'com.google.protobuf:protobuf-java:4.28.2'
+    implementation 'io.grpc:grpc-protobuf:1.60.1'
+    implementation 'io.grpc:grpc-stub:1.60.1'
+    implementation 'io.grpc:grpc-netty-shaded:1.72.0'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.2"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.60.1'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+    
+}
+
+sourceSets {
+    main {
+        proto {
+            srcDir 'src/main/proto'
+        }
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}

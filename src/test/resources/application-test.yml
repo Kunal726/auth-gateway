@@ -1,0 +1,13 @@
+grpc:
+  server:
+    port: 0 # Use random port for testing
+
+spring:
+  profiles:
+    active: test
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/marketmosaic
+          jwk-set-uri: http://localhost:8080/realms/marketmosaic/protocol/openid-connect/certs
