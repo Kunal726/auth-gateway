@@ -1,6 +1,7 @@
 package com.projects.marketmosaic.controller;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
+import com.projects.marketmosaic.common.dto.resp.TokenValidationRespDTO;
 import com.projects.marketmosaic.config.security.LoginAttemptTracker;
 import com.projects.marketmosaic.dtos.*;
 import com.projects.marketmosaic.service.AuthService;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,12 +49,6 @@ public class AuthController {
         return ResponseEntity.ok(authService.logoutAllSessions(authHeader, request, response));
     }
 
-//    @PostMapping("/validate")
-//    public ResponseEntity<TokenValidationRespDTO> validateToken(
-//            HttpServletRequest request) {
-//        return ResponseEntity.ok(authService.validateToken(request));
-//    }
-
     @PostMapping("/forgot-password")
     public ResponseEntity<BaseRespDTO> forgotPassword(
             @RequestBody ForgotPasswordReqDTO reqDTO) {
@@ -63,5 +59,11 @@ public class AuthController {
     public ResponseEntity<BaseRespDTO> resetPassword(
             @RequestBody ResetPasswordReqDTO reqDTO) {
         return ResponseEntity.ok(authService.resetPassword(reqDTO));
+    }
+
+    @PreAuthorize("hasRole('ROLE_SELLER')")
+    @GetMapping("/validate-seller")
+    public ResponseEntity<TokenValidationRespDTO> validateSeller() {
+        return ResponseEntity.ok(authService.validateUserToken());
     }
 }

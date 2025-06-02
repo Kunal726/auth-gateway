@@ -2,8 +2,8 @@ package com.projects.marketmosaic.service.impl;
 
 import auth.AuthServiceGrpc;
 import auth.Auth;
+import com.projects.marketmosaic.common.dto.resp.TokenValidationRespDTO;
 import com.projects.marketmosaic.constants.GrpcConstants;
-import com.projects.marketmosaic.dtos.TokenValidationRespDTO;
 import com.projects.marketmosaic.service.AuthService;
 import io.grpc.stub.StreamObserver;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,10 +30,7 @@ public class AuthGrpcService extends AuthServiceGrpc.AuthServiceImplBase {
                     .setUserId(tokenValidation.getUserId() != null ? tokenValidation.getUserId() : 0L)
                     .setEmail(tokenValidation.getEmail() != null ? tokenValidation.getEmail() : "")
                     .setName(tokenValidation.getName() != null ? tokenValidation.getName() : "")
-                    .addAllAuthorities(
-                            tokenValidation.getAuthorities() != null ? tokenValidation.getAuthorities().stream()
-                                    .map(GrantedAuthority::getAuthority)
-                                    .toList() : Collections.emptyList())
+                    .addAllAuthorities(tokenValidation.getAuthorities())
                     .build();
 
             responseObserver.onNext(response);

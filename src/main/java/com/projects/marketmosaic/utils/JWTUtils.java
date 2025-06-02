@@ -49,7 +49,7 @@ public class JWTUtils {
         claims.put("name", user.getName());
 
         // Convert comma-separated roles to a list of authorities
-        List<String> roles = Arrays.asList(user.getRoles().split(","));
+        List<String> roles = List.of(user.getRole());
         claims.put("roles", roles);
 
         return createToken(claims, userDetails.getUsername());

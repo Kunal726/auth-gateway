@@ -24,15 +24,14 @@ public class CustomUserDetailsService implements UserDetailsService {
                                 .orElseThrow(() -> new UsernameNotFoundException(
                                                 "User not found with username: " + username));
 
-                List<SimpleGrantedAuthority> authorities = Arrays.stream(user.getRoles().split(","))
-                                .map(String::trim)
-                                .map(SimpleGrantedAuthority::new)
-                                .toList();
+                List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getRole()));
 
-                return User.builder()
-                                .username(user.getUsername())
-                                .password(user.getPassword())
-                                .authorities(authorities)
-                                .build();
+                return CustomUserDetails.builder()
+                        .userId(user.getId())
+                        .email(user.getEmail())
+                        .username(user.getUsername())
+                        .password(user.getPassword())
+                        .authorities(authorities)
+                        .build();
         }
 }

@@ -2,7 +2,7 @@ package com.projects.marketmosaic.impl;
 
 import auth.AuthServiceGrpc;
 import auth.Auth;
-import com.projects.marketmosaic.dtos.TokenValidationRespDTO;
+import com.projects.marketmosaic.common.dto.resp.TokenValidationRespDTO;
 import com.projects.marketmosaic.service.AuthService;
 import com.projects.marketmosaic.service.impl.AuthGrpcService;
 import io.grpc.ManagedChannel;
@@ -67,7 +67,7 @@ class AuthGrpcServiceTest {
     @Test
     void validateToken_ValidToken_ReturnsValidResponse() {
         // Arrange
-        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_USER");
+        String authority = "ROLE_USER";
         TokenValidationRespDTO mockResponse = new TokenValidationRespDTO();
         mockResponse.setValid(true);
         mockResponse.setUsername("testuser");

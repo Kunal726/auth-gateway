@@ -45,7 +45,7 @@ public class SecurityUtils {
 
     public boolean isAdmin(String username) {
         UserEntity user = getUserByUsername(username);
-        return user.getRoles() != null && user.getRoles().contains("ADMIN");
+        return user.getRole() != null && user.getRole().contains("ADMIN");
     }
 
     public String validateAndExtractUsername(HttpServletRequest request) {

@@ -1,9 +1,9 @@
 package com.projects.marketmosaic.service;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
+import com.projects.marketmosaic.common.dto.resp.TokenValidationRespDTO;
 import com.projects.marketmosaic.dtos.LoginReqDTO;
 import com.projects.marketmosaic.dtos.RegisterReqDTO;
-import com.projects.marketmosaic.dtos.TokenValidationRespDTO;
 import com.projects.marketmosaic.dtos.ForgotPasswordReqDTO;
 import com.projects.marketmosaic.dtos.ResetPasswordReqDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,4 +23,6 @@ public interface AuthService {
     BaseRespDTO forgotPassword(ForgotPasswordReqDTO reqDTO);
 
     BaseRespDTO resetPassword(ResetPasswordReqDTO reqDTO);
+
+    TokenValidationRespDTO validateUserToken();
 }

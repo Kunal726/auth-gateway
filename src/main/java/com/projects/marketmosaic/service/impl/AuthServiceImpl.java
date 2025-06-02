@@ -1,6 +1,8 @@
 package com.projects.marketmosaic.service.impl;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
+import com.projects.marketmosaic.common.dto.resp.TokenValidationRespDTO;
+import com.projects.marketmosaic.config.security.CustomUserDetails;
 import com.projects.marketmosaic.config.security.LoginAttemptTracker;
 import com.projects.marketmosaic.constants.ErrorMessages;
 import com.projects.marketmosaic.dtos.*;
@@ -14,10 +16,7 @@ import com.projects.marketmosaic.repositories.PasswordResetTokenRepository;
 import com.projects.marketmosaic.repositories.UserRepository;
 import com.projects.marketmosaic.service.AuthService;
 import com.projects.marketmosaic.service.TokenBlackListService;
-import com.projects.marketmosaic.utils.CookieUtils;
-import com.projects.marketmosaic.utils.EmailUtils;
-import com.projects.marketmosaic.utils.JWTUtils;
-import com.projects.marketmosaic.utils.SecurityUtils;
+import com.projects.marketmosaic.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -70,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
             // Reset attempts on successful login
             loginAttemptTracker.recordSuccessfulLogin(loginReqDTO.getUsername());
 
-            UserDetails userDetails = (UserDetails) authenticated.getPrincipal();
+            UserDetails userDetails = (CustomUserDetails) authenticated.getPrincipal();
             UserEntity user = securityUtils.getUserByUsername(loginReqDTO.getUsername());
 
             // Generate the JWT token with user details
@@ -212,7 +213,7 @@ public class AuthServiceImpl implements AuthService {
             UserDetails userDetails = User.builder()
                     .username(user.getUsername())
                     .password(user.getPassword())
-                    .authorities(user.getRoles())
+                    .authorities(user.getRole())
                     .build();
 
             if (Boolean.FALSE.equals(jwtUtils.validateToken(token, userDetails))) {
@@ -225,7 +226,9 @@ public class AuthServiceImpl implements AuthService {
             response.setUserId(user.getId());
             response.setEmail(user.getEmail());
             response.setName(user.getName());
-            response.setAuthorities(userDetails.getAuthorities());
+            response.setAuthorities(userDetails.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .toList());
 
         } catch (AuthException ae) {
             log.error("Auth error validating token: {}", ae.getMessage());
@@ -297,6 +300,21 @@ public class AuthServiceImpl implements AuthService {
         respDTO.setCode("200");
 
         return respDTO;
+    }
+
+    @Override
+    public TokenValidationRespDTO validateUserToken() {
+        TokenValidationRespDTO tokenValidationRespDTO = new TokenValidationRespDTO();
+        tokenValidationRespDTO.setValid(false);
+        CustomUserDetails userDetails = UserContextHelper.getLoggedInUser();
+        if(userDetails != null) {
+            tokenValidationRespDTO.setValid(true);
+            tokenValidationRespDTO.setUserId(userDetails.getUserId());
+            tokenValidationRespDTO.setEmail(userDetails.getEmail());
+            tokenValidationRespDTO.setUsername(userDetails.getUsername());
+            tokenValidationRespDTO.setAuthorities(userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
+        }
+        return tokenValidationRespDTO;
     }
 
     private BaseRespDTO getLockoutResponse(String username) {
