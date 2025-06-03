@@ -4,6 +4,8 @@ import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
 import com.projects.marketmosaic.common.exception.handler.BaseGlobalHandler;
 import com.projects.marketmosaic.exception.exceptions.AuthException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -32,5 +34,14 @@ public class GlobalExceptionHandler extends BaseGlobalHandler {
         response.setMessage(authException.getMessage());
         response.setStatus(false);
         return ResponseEntity.status(authException.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<BaseRespDTO> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
+        BaseRespDTO response = new BaseRespDTO();
+        response.setCode(String.valueOf(HttpStatus.CONFLICT.value()));
+        response.setMessage(ex.getMessage());
+        response.setStatus(false);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 }

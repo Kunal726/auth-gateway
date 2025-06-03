@@ -61,9 +61,21 @@ public class AuthController {
         return ResponseEntity.ok(authService.resetPassword(reqDTO));
     }
 
-    @PreAuthorize("hasRole('ROLE_SELLER')")
+    @PreAuthorize("hasAuthority('SELLER')")
     @GetMapping("/validate-seller")
     public ResponseEntity<TokenValidationRespDTO> validateSeller() {
+        return ResponseEntity.ok(authService.validateUserToken());
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/validate-admin")
+    public ResponseEntity<TokenValidationRespDTO> validateAdmin() {
+        return ResponseEntity.ok(authService.validateUserToken());
+    }
+
+    @PreAuthorize("hasAuthority('USER')")
+    @GetMapping("/validate-user")
+    public ResponseEntity<TokenValidationRespDTO> validateUser() {
         return ResponseEntity.ok(authService.validateUserToken());
     }
 }

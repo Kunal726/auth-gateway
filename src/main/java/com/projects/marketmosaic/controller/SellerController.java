@@ -14,25 +14,25 @@ public class SellerController {
     private final SellerService sellerService;
 
     @PostMapping("/approve/{username}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BaseRespDTO> approveSeller(@PathVariable String username) {
         return ResponseEntity.ok(sellerService.approveSeller(username));
     }
 
     @PostMapping("/reject/{username}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BaseRespDTO> rejectSeller(@PathVariable String username) {
         return ResponseEntity.ok(sellerService.rejectSeller(username));
     }
 
     @PostMapping("/revoke/seller/{username}")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BaseRespDTO> revokeSeller(@PathVariable String username) {
         return ResponseEntity.ok(sellerService.revokeSeller(username));
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<BaseRespDTO> getPendingSellers() {
         return ResponseEntity.ok(sellerService.getPendingSellers());
     }

@@ -30,7 +30,7 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false)
-    private String role = "ROLE_USER";
+    private String role = "USER";
 
     @Column(name = "date_added")
     @CreationTimestamp

@@ -1,11 +1,14 @@
 package com.projects.marketmosaic.service.impl;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
+import com.projects.marketmosaic.dtos.RegisterReqDTO;
 import com.projects.marketmosaic.dtos.ShippingAddressDTO;
 import com.projects.marketmosaic.dtos.UpdateUserDTO;
 import com.projects.marketmosaic.dtos.UserDTO;
+import com.projects.marketmosaic.entity.AdminEntity;
 import com.projects.marketmosaic.entity.ShippingAddressEntity;
 import com.projects.marketmosaic.entity.UserEntity;
+import com.projects.marketmosaic.enums.AuthStatus;
 import com.projects.marketmosaic.exception.exceptions.AuthException;
 import com.projects.marketmosaic.repositories.UserRepository;
 import com.projects.marketmosaic.service.TokenBlackListService;
@@ -14,6 +17,9 @@ import com.projects.marketmosaic.utils.FileUtils;
 import com.projects.marketmosaic.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final TokenBlackListService tokenBlackListService;
     private final FileUtils fileUtils;
     private final SecurityUtils securityUtils;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public BaseRespDTO getUser(String username, HttpServletRequest request) {
@@ -135,6 +142,38 @@ public class UserServiceImpl implements UserService {
         respDTO.setMessage("User deleted successfully");
         respDTO.setCode("200");
 
+        return respDTO;
+    }
+
+    @Override
+    public BaseRespDTO addAdmin(RegisterReqDTO registerReqDTO) {
+        BaseRespDTO respDTO = new BaseRespDTO();
+        if(registerReqDTO != null && StringUtils.isNoneBlank(registerReqDTO.getEmail(), registerReqDTO.getName(), registerReqDTO.getUsername(), registerReqDTO.getPassword())) {
+
+            if(userRepository.existsByEmail(registerReqDTO.getEmail())) {
+                throw new AuthException("Email Already Exist", AuthStatus.AUTH_005, HttpStatus.BAD_REQUEST);
+            }
+
+            UserEntity adminUser = new UserEntity();
+            adminUser.setEmail(registerReqDTO.getEmail());
+            adminUser.setUsername(registerReqDTO.getUsername());
+            adminUser.setName(registerReqDTO.getName());
+            adminUser.setPassword(passwordEncoder.encode(registerReqDTO.getPassword()));
+            adminUser.setRole("ADMIN");
+
+            AdminEntity adminEntity = new AdminEntity();
+            adminEntity.setUser(adminUser);
+            adminEntity.setAdminNotes("CREATED");
+
+            adminUser.setAdmin(adminEntity);
+
+            userRepository.saveAndFlush(adminUser);
+
+            respDTO.setCode(String.valueOf(HttpStatus.OK.value()));
+            respDTO.setStatus(true);
+            respDTO.setMessage("Admin Created");
+
+        }
         return respDTO;
     }
 

@@ -35,8 +35,8 @@ public class SellerServiceImpl implements SellerService {
         }
 
         user.getSeller().setSellerStatus(SellerStatus.APPROVED);
-        if (!user.getRole().contains("ROLE_SELLER")) {
-            user.setRole("ROLE_SELLER");
+        if (!user.getRole().contains("SELLER")) {
+            user.setRole("SELLER");
         }
         userRepository.save(user);
 

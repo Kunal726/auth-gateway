@@ -1,6 +1,7 @@
 package com.projects.marketmosaic.controller;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
+import com.projects.marketmosaic.dtos.RegisterReqDTO;
 import com.projects.marketmosaic.dtos.UpdateUserDTO;
 import com.projects.marketmosaic.service.UserService;
 import com.projects.marketmosaic.utils.FileUtils;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,5 +48,11 @@ public class UserController {
             @PathVariable String username,
             HttpServletRequest request) {
         return ResponseEntity.ok(userService.deleteUser(username, request));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/admin/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BaseRespDTO> createAdmin(@RequestBody RegisterReqDTO registerReqDTO) {
+        return ResponseEntity.ok(userService.addAdmin(registerReqDTO));
     }
 }
