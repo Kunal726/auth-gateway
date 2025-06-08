@@ -36,7 +36,7 @@ server:
 logging:
   level:
     root: INFO
-    com.example.marketmosaic: DEBUG
+    com.projects.marketmosaic: DEBUG
 
 management:
   endpoints:
