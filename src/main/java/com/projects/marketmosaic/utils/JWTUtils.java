@@ -49,8 +49,7 @@ public class JWTUtils {
         claims.put("name", user.getName());
 
         // Convert comma-separated roles to a list of authorities
-        List<String> roles = List.of(user.getRole());
-        claims.put("roles", roles);
+        claims.put("role", user.getRole());
 
         return createToken(claims, userDetails.getUsername());
     }
@@ -71,11 +70,8 @@ public class JWTUtils {
 
     public Collection<SimpleGrantedAuthority> extractAuthorities(String token) {
         Claims claims = extractAllClaims(token);
-        @SuppressWarnings("unchecked")
-        List<String> roles = claims.get("roles", List.class);
-        return roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        String role = claims.get("role", String.class);
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
