@@ -166,6 +166,7 @@ public class ShippingAddressServiceImpl implements ShippingAddressService {
         address.setPostalCode(dto.getPostalCode());
         address.setPhoneNumber(dto.getPhoneNumber());
         address.setAddressType(dto.getAddressType());
+        address.setName(dto.getName());
     }
 
     private ShippingAddressDTO convertToDTO(ShippingAddressEntity entity) {
@@ -180,6 +181,7 @@ public class ShippingAddressServiceImpl implements ShippingAddressService {
         dto.setPhoneNumber(entity.getPhoneNumber());
         dto.setAddressType(entity.getAddressType());
         dto.setDefault(entity.isDefault());
+        dto.setName(entity.getName());
         return dto;
     }
 }

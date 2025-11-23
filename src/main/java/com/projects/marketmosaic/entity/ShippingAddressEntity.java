@@ -20,6 +20,9 @@ public class ShippingAddressEntity {
     private UserEntity user;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String addressLine1;
 
     private String addressLine2;
