@@ -21,6 +21,14 @@ public class ShippingAddressController {
         return ResponseEntity.ok(shippingAddressService.getAddresses(username, request));
     }
 
+    @GetMapping("/{addressId}")
+    public ResponseEntity<BaseRespDTO> getAddress(
+            @PathVariable Long userId,
+            @PathVariable Long addressId,
+            HttpServletRequest request) {
+        return ResponseEntity.ok(shippingAddressService.getAddress(userId, addressId, request));
+    }
+
     @PostMapping
     public ResponseEntity<Void> addAddress(
             @PathVariable String username,

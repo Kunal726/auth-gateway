@@ -131,6 +131,18 @@ public class ShippingAddressServiceImpl implements ShippingAddressService {
         return respDTO;
     }
 
+    @Override
+    public BaseRespDTO getAddress(Long userId, Long addressId, HttpServletRequest request) {
+        ShippingAddressEntity shippingAddressEntity = getAddressById(addressId, userId);
+
+        BaseRespDTO respDTO = new BaseRespDTO();
+        respDTO.setStatus(true);
+        respDTO.setMessage("Shipping address retrieved successfully");
+        respDTO.setCode("200");
+        respDTO.setData(convertToDTO(shippingAddressEntity));
+        return respDTO;
+    }
+
     private ShippingAddressEntity getAddressById(Long addressId, Long userId) {
         return addressRepository.findByIdAndUserIdAndIsActiveTrue(addressId, userId)
                 .orElseThrow(() -> new AuthException(ErrorMessages.ADDRESS_NOT_FOUND, AuthStatus.AUTH_005,

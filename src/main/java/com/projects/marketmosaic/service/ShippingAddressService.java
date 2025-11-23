@@ -15,4 +15,6 @@ public interface ShippingAddressService {
     BaseRespDTO getAddresses(String username, HttpServletRequest request);
 
     BaseRespDTO setDefaultAddress(String username, Long addressId, HttpServletRequest request);
+
+    BaseRespDTO getAddress(Long userId, Long addressId, HttpServletRequest request);
 }
