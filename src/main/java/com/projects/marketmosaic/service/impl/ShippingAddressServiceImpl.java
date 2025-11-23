@@ -1,8 +1,8 @@
 package com.projects.marketmosaic.service.impl;
 
+import com.projects.marketmosaic.common.dto.user.ShippingAddressDTO;
 import com.projects.marketmosaic.constants.ErrorMessages;
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
-import com.projects.marketmosaic.dtos.ShippingAddressDTO;
 import com.projects.marketmosaic.entity.ShippingAddressEntity;
 import com.projects.marketmosaic.entity.UserEntity;
 import com.projects.marketmosaic.enums.AuthStatus;

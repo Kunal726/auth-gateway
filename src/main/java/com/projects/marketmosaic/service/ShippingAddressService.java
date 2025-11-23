@@ -1,7 +1,7 @@
 package com.projects.marketmosaic.service;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
-import com.projects.marketmosaic.dtos.ShippingAddressDTO;
+import com.projects.marketmosaic.common.dto.user.ShippingAddressDTO;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface ShippingAddressService {

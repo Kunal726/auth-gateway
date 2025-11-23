@@ -1,6 +1,7 @@
 package com.projects.marketmosaic.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.projects.marketmosaic.common.dto.user.ShippingAddressDTO;
 import lombok.Data;
 
 @Data

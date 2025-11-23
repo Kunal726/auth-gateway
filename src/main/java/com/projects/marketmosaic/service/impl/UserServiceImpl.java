@@ -1,8 +1,8 @@
 package com.projects.marketmosaic.service.impl;
 
 import com.projects.marketmosaic.common.dto.resp.BaseRespDTO;
+import com.projects.marketmosaic.common.dto.user.ShippingAddressDTO;
 import com.projects.marketmosaic.dtos.RegisterReqDTO;
-import com.projects.marketmosaic.dtos.ShippingAddressDTO;
 import com.projects.marketmosaic.dtos.UpdateUserDTO;
 import com.projects.marketmosaic.dtos.UserDTO;
 import com.projects.marketmosaic.entity.AdminEntity;
